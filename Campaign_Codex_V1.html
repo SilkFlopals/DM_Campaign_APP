@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campaign Codex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e6ecee;--panel:#f6f9f8;--ink:#1d2b33;--muted:#58696f;--line:#c9d5d8;--accent:#1f6f78;--on-accent:#fff;--brass:#9a6a14;--side:#21343c;--side-ink:#e3ecee;--side-muted:#9bb0b6;--side-line:#34495260;--sel:#2e4953;
+ --serif:"Alegreya",Georgia,"Times New Roman",serif;--sans:"Alegreya Sans","Segoe UI",system-ui,sans-serif;
+ color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10171a;--panel:#192327;--ink:#e3ebee;--muted:#93a5ad;--line:#2c3a41;--accent:#4fb3bf;--on-accent:#0c1d20;--brass:#d9a441;--side:#0c1316;--side-ink:#e3ebee;--side-muted:#7f949c;--sel:#1e2f36;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10171a;--panel:#192327;--ink:#e3ebee;--muted:#93a5ad;--line:#2c3a41;--accent:#4fb3bf;--on-accent:#0c1d20;--brass:#d9a441;--side:#0c1316;--side-ink:#e3ebee;--side-muted:#7f949c;--sel:#1e2f36;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:330px 1fr;height:100%}
+.side{background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;min-height:0}
+.brand{padding:18px 18px 8px}
+.brand input{width:100%;background:transparent;border:0;border-bottom:1px solid transparent;color:var(--side-ink);font:700 24px/1.2 var(--serif);padding:2px 0}
+.brand input:hover,.brand input:focus{border-bottom-color:var(--side-muted)}
+.brand small{color:var(--side-muted)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 18px}
+.tabs button{background:transparent;border:1px solid var(--side-muted);color:var(--side-ink);border-radius:6px;padding:6px 8px;text-align:left;display:flex;justify-content:space-between;opacity:.8}
+.tabs button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);opacity:1;font-weight:700}
+.tools{display:flex;gap:8px;padding:6px 18px 10px}
+.tools input{flex:1;min-width:0;background:#ffffff14;border:1px solid var(--side-muted);border-radius:6px;padding:6px 10px;color:var(--side-ink)}
+.tools input::placeholder{color:var(--side-muted)}
+.add{background:var(--brass);color:#fff;border:0;border-radius:6px;padding:6px 12px;font-weight:700;white-space:nowrap}
+.qrow{padding:0 18px 8px}
+.qrow select{width:100%;background:#ffffff14;border:1px solid var(--side-muted);border-radius:6px;padding:5px 8px;color:var(--side-ink)}
+.qrow option{color:#1d2b33}
+.allbar{padding:0 18px 8px}
+.allbar:empty{display:none}
+.allbar button{width:100%;background:transparent;border:1px solid var(--side-muted);color:var(--side-ink);border-radius:6px;padding:6px 8px;text-align:left;display:flex;justify-content:space-between;opacity:.8}
+.allbar button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);opacity:1;font-weight:700}
+.list{flex:1;overflow:auto;padding:0 10px 10px;min-height:0}
+.row{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:6px;padding:8px 10px;color:var(--side-ink)}
+.row:hover{background:#ffffff10}
+.row[aria-current=true]{background:var(--sel)}
+.row b{display:block;font:700 18px/1.25 var(--serif)}
+.row span{color:var(--side-muted);font-size:14px}
+.grp{display:flex;align-items:center;justify-content:space-between;width:100%;background:transparent;border:0;border-top:1px solid var(--side-line);color:var(--side-muted);padding:8px 10px;font-weight:700;text-align:left;margin-top:4px}
+.grp::before{content:"";flex:none;border:5px solid transparent;border-top-color:currentColor;border-bottom:0;margin-right:8px}
+.grp[aria-expanded=false]::before{transform:rotate(-90deg)}
+.grp span:first-child{flex:1}
+.grp:hover{color:var(--side-ink)}
+.xref{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit}
+.rich{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 10px;min-height:92px;white-space:pre-wrap;line-height:1.45;cursor:text}
+.rich:hover{border-color:var(--accent)}
+.rich[hidden]{display:none}
+.ac{position:fixed;z-index:50;background:var(--panel);color:var(--ink);border:1px solid var(--accent);border-radius:6px;box-shadow:0 4px 14px #0003;font-size:15px;overflow:hidden;max-width:min(420px,92vw)}
+.ac[hidden]{display:none}
+.acitem{padding:4px 10px;cursor:pointer;display:flex;justify-content:space-between;gap:16px}
+.acitem small{opacity:.75;white-space:nowrap}
+.acitem[aria-selected=true]{background:var(--accent);color:var(--on-accent)}
+.calc{background:var(--panel);border:1px dashed var(--line);border-radius:6px;padding:7px 10px}
+.none{color:var(--side-muted);padding:10px;font-size:15px}
+.foot{flex-wrap:wrap;display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--side-line);font-size:14px}
+.foot button,.foot label{background:transparent;border:1px solid var(--side-muted);color:var(--side-ink);border-radius:6px;padding:4px 10px;cursor:pointer}
+.detail{overflow:auto;padding:28px clamp(16px,4vw,48px);min-width:0}
+.sheet{max-width:760px;margin:0 auto}
+.empty{max-width:440px;margin:15vh auto;color:var(--muted);text-align:center;font-size:18px}
+.empty h2{font:700 28px var(--serif);color:var(--ink);margin:0 0 6px}
+.dhead{display:flex;gap:12px;align-items:center;border-bottom:2px solid var(--brass);padding-bottom:8px;margin-bottom:18px}
+.kind{color:var(--brass);font-weight:700;margin:0}
+.title{flex:1;min-width:0;background:transparent;border:0;font:700 36px/1.15 var(--serif);padding:0}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:6px;padding:4px 12px;color:var(--muted)}
+.ghost.warn{border-color:#b3392b;color:#b3392b;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.fld{display:flex;flex-direction:column;gap:3px}
+.fld[hidden]{display:none}
+.fld.wide{grid-column:1/-1}
+.fld label{font-weight:700;color:var(--muted);font-size:15px}
+.fld input,.fld select,.fld textarea,.addnote textarea{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 10px;width:100%}
+.fld textarea,.addnote textarea{min-height:92px;resize:vertical;line-height:1.45}
+h3{font:700 22px var(--serif);margin:28px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:15px}
+.chip i{font-style:normal;color:var(--muted)}
+.addnote{display:flex;gap:10px;align-items:flex-end}
+.addnote textarea{min-height:64px}
+.addnote button{background:var(--accent);color:var(--on-accent);border:0;border-radius:6px;padding:8px 14px;font-weight:700}
+.note{background:var(--panel);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:8px 12px;margin-top:10px;white-space:pre-wrap}
+.note small{display:flex;justify-content:space-between;color:var(--muted);white-space:normal}
+.note button{background:none;border:0;color:var(--muted);text-decoration:underline;padding:0}
+.addrace{display:flex;gap:8px;margin-top:6px}
+.addrace[hidden]{display:none}
+.addrace input{flex:1;min-width:0}
+.addrace button{background:var(--accent);color:var(--on-accent);border:0;border-radius:6px;padding:6px 12px;font-weight:700;white-space:nowrap}
+.addrace .ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:400}
+.famrow{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.famrow .rel{min-width:130px;font-weight:700;color:var(--brass)}
+.famrow .chip{cursor:pointer;color:inherit}
+.relsel{min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.famrow .ghost{padding:2px 10px;font-size:14px}
+.fnone{color:var(--muted);margin:0 0 6px}
+.addfam{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.addfam select{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 10px;max-width:100%}
+.addfam button{background:var(--accent);color:var(--on-accent);border:0;border-radius:6px;padding:8px 14px;font-weight:700}
+.pic{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.pic img{max-width:220px;max-height:220px;border-radius:8px;border:1px solid var(--line);display:block;object-fit:cover}
+#photo{margin-bottom:18px}
+.thumb{float:left;width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:10px}
+.row::after{content:"";display:block;clear:both}
+.back{display:none;margin-bottom:12px}
+@media (max-width:760px){
+ .app{grid-template-columns:1fr}
+ .detail{display:none}
+ body.has-sel .side{display:none}
+ body.has-sel .detail{display:block}
+ .back{display:inline-block;background:transparent;border:1px solid var(--line);border-radius:6px;padding:4px 12px}
+ .grid{grid-template-columns:1fr}
+ .title{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="side">
+  <div class="brand"><input id="cname" aria-label="Campaign name" placeholder="Campaign name"><small>Your campaign notes</small></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tools"><input id="q" type="search" placeholder="Search everything" aria-label="Search everything"><button class="add" id="add"></button></div>
+  <div class="qrow"><select id="qtype" aria-label="Limit search to a type"></select></div>
+  <div class="allbar" id="allbar"></div>
+  <div class="list" id="list"></div>
+  <div class="foot"><button id="xl">Export to Excel</button><button id="exp">Backup (JSON)</button><button id="clr">Clear all data</button><label>Import backup<input id="imp" type="file" accept=".json,application/json" hidden></label></div>
+ </aside>
+ <main class="detail" id="detail"></main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const KEY='dm-campaign-codex-v1';
+const SETTLE=['Village','Town','City'];
+const isPC=f=>f.ctype==='Player character';
+function popNum(o){return parseInt(String(o.f.pop||'').replace(/[^0-9]/g,''),10)||0}
+function totalPop(it,seen){
+ seen=seen||new Set([it.id]);
+ let sum=0;
+ S.items.forEach(c=>{
+  if(c.type!=='country'||c.f.parent!==it.id||seen.has(c.id))return;
+  seen.add(c.id);
+  sum+=SETTLE.includes(c.f.kind)?popNum(c):((c.f.kind==='POI'||c.f.kind==='Realm')?0:totalPop(c,seen));
+ });
+ return sum;
+}
+const isAdmin=f=>!f.kind||['Country','Province','Continent','Realm'].includes(f.kind);
+const PARENT_KINDS={POI:['Village','Town','City','Province'],Village:['Province'],Town:['Province'],City:['Province'],Province:['Country'],Country:['Continent']};
+function refCands(it,x,k){
+ let l=refItems(x).filter(o=>o.id!==it.id);
+ if(k==='parent'){const ok=PARENT_KINDS[it.f.kind||'Country']||[];l=l.filter(o=>ok.includes(o.f.kind||'Country')||o.id===it.f.parent)}
+ return l;
+}
+function ancestors(it){
+ const out=[],seen=new Set([it.id]);let c=byId(it.f.parent);
+ while(c&&!seen.has(c.id)&&out.length<8){out.push(c);seen.add(c.id);c=byId(c.f.parent)}
+ return out;
+}
+function inhGov(it){const a=ancestors(it).find(o=>o.f.gov&&!SETTLE.includes(o.f.kind));return a?a.f.gov:''}
+function locUi(it){
+ const box=$('#loc');
+ if(it.type!=='country'){box.innerHTML='';return}
+ const chain=ancestors(it);
+ if(!chain.length){box.innerHTML='';return}
+ box.innerHTML='<h3>Location</h3>'+chain.map(o=>`<div class="famrow"><span class="rel">${esc(o.f.kind||'Country')}</span><button class="chip" data-go="${o.id}">${esc(o.name||'Unnamed')}</button><span class="fnone" style="margin:0">${esc([o.f.gov?'Government: '+o.f.gov:'',nmOf(o.f.ruler)?'Ruler: '+nmOf(o.f.ruler):''].filter(Boolean).join(', '))}</span></div>`).join('');
+}
+function refreshParent(it){const el=document.querySelector('[data-fld="parent"]'),f=TYPES[it.type].fields.find(x=>x[0]==='parent');if(el&&f){el.outerHTML=fieldHtml(it,f);applyShow(it)}}
+function migrate(i){
+ if(i.type==='pc'){i.type='npc';i.f=i.f||{};i.f.ctype='Player character'}
+ if(i.f&&i.f.holderPc){if(!i.f.holder)i.f.holder=i.f.holderPc;delete i.f.holderPc}
+ if(i.type==='place'){
+  i.type='country';i.f=i.f||{};
+  if(!i.f.kind)i.f.kind='Village';
+  if(i.f.country){i.f.parent=i.f.country}
+  delete i.f.country;
+ }
+ return i;
+}
+function refItems(x){return x==='settle'?S.items.filter(i=>i.type==='country'&&SETTLE.includes(i.f.kind)):S.items.filter(i=>i.type===x)}
+const TYPES={
+ npc:{label:'Characters',one:'Character',fields:[
+  ['ctype','Type','select',['NPC','Player character']],
+  ['player','Player','text',null,isPC],
+  ['race','Race / species','race'],['gender','Gender','select',['Unspecified','Female','Male','Non-binary']],
+  ['role','Role or occupation','text',null,f=>!isPC(f)],
+  ['cls','Class','text',null,isPC],['level','Level','text',null,isPC],
+  ['home','Home','ref','settle'],['align','Alignment','select',['Unknown','Lawful good','Neutral good','Chaotic good','Lawful neutral','True neutral','Chaotic neutral','Lawful evil','Neutral evil','Chaotic evil']],
+  ['look','Appearance and manner','area'],['secret','Secrets and motives','area',null,f=>!isPC(f)],
+  ['backstory','Backstory','area'],['goals','Goals and bonds','area',null,isPC],['dm','DM notes (secrets and plot hooks)','area',null,isPC]]},
+ 
+ country:{label:'Geography',one:'Location',fields:[
+  ['kind','Type','select',['Country','Province','Continent','Realm','Village','Town','City','POI']],
+  ['parent','Located in','ref','country',f=>!['Continent','Realm'].includes(f.kind)],
+  ['pop','Population','text',null,f=>SETTLE.includes(f.kind)],
+  ['popTotal','Population (total of locations beneath)','calc',null,f=>['Province','Country','Continent'].includes(f.kind)],
+  ['entry','Method of entry','area',null,f=>f.kind==='Realm'],
+  ['gov','Government','text',null,isAdmin],['capital','Capital','ref','settle',isAdmin],
+  ['ruler','Leader or ruler','ref','npc'],['desc','Description, notable places and politics','area']]},
+ lore:{label:'Lore',one:'Lore entry',fields:[
+  ['cat','Category','select',['History','Religion','Magic','Legend','Faction','Other']],
+  ['desc','What the world knows','area'],['truth','What is really true','area']]},
+
+ item:{label:'Items',one:'Item',fields:[
+  ['kind','Item type','select',['Common','Unique']],
+  ['cat','Category','select',['Weapon','Armor','Magic item','Wondrous item','Tool','Treasure','Document','Other']],
+  ['holder','Held by','ref','npc',f=>f.kind==='Unique'],
+  ['holderTxt','Or held by someone else','text',null,f=>f.kind==='Unique'],
+  ['where','No one has it: last known place','ref','country',f=>f.kind==='Unique'&&!f.holder&&!f.holderPc&&!(f.holderTxt||'').trim()],
+  ['whereTxt','Where exactly','text',null,f=>f.kind==='Unique'&&!f.holder&&!f.holderPc&&!(f.holderTxt||'').trim()],
+  ['desc','Description and properties','area'],['history','History and rumors','area']]}
+};
+const nmOf=id=>{const o=byId(id);return o?(o.name||'Unnamed'):''};
+const SUB={item:i=>i.f.kind||'Common',npc:i=>[isPC(i.f)?'Player character':'',i.f.race,isPC(i.f)?[i.f.cls,i.f.level?'level '+i.f.level:''].filter(Boolean).join(' '):i.f.role].filter(Boolean).join(', '),country:i=>[i.f.kind||'Country',nmOf(i.f.parent),nmOf(i.f.ruler)?'led by '+nmOf(i.f.ruler):''].filter(Boolean).join(', '),lore:i=>i.f.cat};
+let qtype='';
+let S={name:'',items:[]},tab='npc',sel=null,q='',confirmDel=false;
+try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}
+if(!Array.isArray(S.items))S={name:'',items:[]};
+S.items.forEach(migrate);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const byId=id=>S.items.find(i=>i.id===id);
+let st;function save(){clearTimeout(st);st=setTimeout(()=>{const n=document.querySelector('.brand small');try{localStorage.setItem(KEY,JSON.stringify(S));if(n)n.textContent='Your campaign notes'}catch(e){if(n)n.textContent='Browser storage is full or blocked. Export a backup now.'}},250)}
+
+function renderTabs(){
+ $('#tabs').innerHTML=Object.entries(TYPES).map(([k,t])=>`<button data-tab="${k}" aria-pressed="${!q&&!qtype&&k===tab}">${t.label}<span>${S.items.filter(i=>i.type===k).length}</span></button>`).join('');
+ $('#allbar').innerHTML=`<button data-tab="all" aria-pressed="${!q&&!qtype&&tab==='all'}">Show all entries<span>${S.items.length}</span></button>`;
+ $('#add').hidden=tab==='all';
+ if(tab!=='all')$('#add').textContent='+ New '+TYPES[tab].one.toLowerCase();
+}
+function hay(i){return [i.name,...Object.values(i.f),...i.log.map(n=>n.x)].join(' ').toLowerCase()}
+const GROUPBY={npc:'ctype',country:'kind',lore:'cat',item:'cat'};
+let collapsed=new Set();
+try{collapsed=new Set(JSON.parse(localStorage.getItem(KEY+'-collapsed')||'[]'))}catch(e){}
+function saveCollapsed(){try{localStorage.setItem(KEY+'-collapsed',JSON.stringify([...collapsed]))}catch(e){}}
+function grpOf(i){
+ if(tab==='all')return TYPES[i.type].label;
+ const k=GROUPBY[i.type],f=TYPES[i.type].fields.find(x=>x[0]===k);
+ return (f&&(i.f[k]||f[3][0]))||'Other';
+}
+function groupHtml(rows,rowHtml){
+ const groups=new Map();
+ rows.forEach(i=>{const g=grpOf(i);if(!groups.has(g))groups.set(g,[]);groups.get(g).push(i)});
+ const ord=tab==='all'?Object.values(TYPES).map(t=>t.label):TYPES[tab].fields.find(x=>x[0]===GROUPBY[tab])[3];
+ const keys=[...groups.keys()].sort((a,b)=>{const x=ord.indexOf(a),y=ord.indexOf(b);return (x<0?99:x)-(y<0?99:y)});
+ return keys.map(g=>{
+  const key=tab+'|'+g,open=!collapsed.has(key);
+  return `<button class="grp" data-grp="${esc(key)}" aria-expanded="${open}"><span>${esc(g)}</span><span>${groups.get(g).length}</span></button>`+(open?groups.get(g).map(rowHtml).join(''):'')}).join('');
+}
+function linkify(text,selfId){
+ text=String(text||'');if(!text)return '';
+ const map=new Map();
+ S.items.forEach(o=>{const n=(o.name||'').trim();if(n.length>=2&&o.id!==selfId&&!map.has(n.toLowerCase()))map.set(n.toLowerCase(),o.id)});
+ if(!map.size)return esc(text);
+ const names=[...map.keys()].sort((a,b)=>b.length-a.length).map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+ const re=new RegExp('(?<![\\p{L}\\p{N}])('+names.join('|')+')(?![\\p{L}\\p{N}])','giu');
+ let out='',last=0,m;
+ while((m=re.exec(text))){out+=esc(text.slice(last,m.index))+`<button class="xref" data-go="${map.get(m[1].toLowerCase())}">${esc(m[0])}</button>`;last=m.index+m[0].length}
+ return out+esc(text.slice(last));
+}
+function editRich(r){const ta=$('#f_'+r.dataset.rich);r.hidden=true;ta.hidden=false;ta.focus()}
+function renderList(){
+ const needle=q.trim().toLowerCase(),srch=!!(needle||qtype);
+ const order=Object.keys(TYPES);
+ const rows=S.items.filter(i=>srch?((!needle||hay(i).includes(needle))&&(!qtype||i.type===qtype)):(tab==='all'||i.type===tab)).sort((a,b)=>(tab==='all'&&!srch?order.indexOf(a.type)-order.indexOf(b.type):0)||(a.name||'').localeCompare(b.name||''));
+ const rowHtml=i=>{
+  const sub=[(srch||tab==='all')?TYPES[i.type].one:'',SUB[i.type](i)].filter(Boolean).join(', ');
+  return `<button class="row" data-id="${i.id}" aria-current="${i.id===sel}">${i.photo?`<img class="thumb" src="${i.photo}" alt="">`:''}<b>${esc(i.name||'Unnamed')}</b><span>${esc(sub)||'&nbsp;'}</span></button>`};
+ $('#list').innerHTML=!rows.length?`<div class="none">${srch?'Nothing matches that search.':tab==='all'?'Nothing created yet. Pick a section above and add your first entry.':'Nothing here yet. Use the button above to add your first '+TYPES[tab].one.toLowerCase()+'.'}</div>`:(srch?rows.map(rowHtml).join(''):groupHtml(rows,rowHtml));
+}
+function opts(list,cur,blank){return (blank?`<option value="">${blank}</option>`:'')+list.map(o=>{const v=Array.isArray(o)?o[0]:o,l=Array.isArray(o)?o[1]:o;return `<option value="${esc(v)}"${v===cur?' selected':''}>${esc(l)}</option>`}).join('')}
+const RACES=['Aasimar','Dragonborn','Dwarf','Elf','Firbolg','Genasi','Gnome','Goblin','Goliath','Half-elf','Half-orc','Halfling','Hobgoblin','Human','Kenku','Lizardfolk','Orc','Tabaxi','Tiefling','Tortle'];
+function raceList(cur){const l=[...RACES,...(S.races||[])];if(cur&&!l.includes(cur))l.push(cur);return l.sort((a,b)=>a.localeCompare(b))}
+function raceHtml(id,v){return `<select id="${id}" data-k="race">${opts(raceList(v),v,'Not set')}<option value="__new">+ Add custom race…</option></select><div class="addrace" id="addrace" hidden><input id="newrace" placeholder="Custom race name" aria-label="Custom race name"><button id="saverace">Save race</button><button class="ghost" id="cancelrace">Cancel</button></div>`}
+function fieldHtml(it,[k,l,t,x]){
+ const v=it.f[k]||'',id='f_'+k;let c;
+ if(t==='area')c=`<div class="rich" id="${id}_r" data-rich="${k}" tabindex="0" role="button" aria-label="Edit ${esc(l)}"${v?'':' hidden'}>${linkify(v,it.id)}</div><textarea id="${id}" data-k="${k}"${v?' hidden':''}>${esc(v)}</textarea>`;
+ else if(t==='calc')c=`<div class="calc" id="${id}">${totalPop(it).toLocaleString()}</div>`;
+ else if(t==='race')c=raceHtml(id,v);
+ else if(t==='select')c=`<select id="${id}" data-k="${k}">${opts(x,v)}</select>`;
+ else if(t==='ref')c=`<select id="${id}" data-k="${k}">${opts(refCands(it,x,k).sort((a,b)=>a.name.localeCompare(b.name)).map(i=>[i.id,i.name||'Unnamed']),v,'None')}</select>`;
+ else c=`<input id="${id}" data-k="${k}" value="${esc(v)}"${k==='gov'&&it.type==='country'&&inhGov(it)?` placeholder="Inherited: ${esc(inhGov(it))}"`:''}>`;
+ if(k==='parent'){const need=it.f.kind==='POI'?'settlement or province':(PARENT_KINDS[it.f.kind||'Country']||[])[0];if(need&&!refCands(it,x,k).length)c+=`<small class="fnone">Create a ${need} entry first.</small>`}
+ return `<div class="fld${t==='area'?' wide':''}" data-fld="${k}"><label for="${id}">${l}</label>${c}</div>`;
+}
+function detail(){
+ acHide();
+ const it=byId(sel),d=$('#detail');
+ if(!it){document.body.classList.remove('has-sel');
+  d.innerHTML=`<div class="empty"><h2>Build your world</h2>Pick an entry on the left, or add a new character, location or piece of lore. Everything saves automatically in this browser.</div>`;return}
+ document.body.classList.add('has-sel');
+ d.innerHTML=`<div class="sheet"><button class="back" id="back">Back to list</button>
+ <p class="kind">${TYPES[it.type].one}</p>
+ <div class="dhead"><input class="title" id="nm" value="${esc(it.name)}" placeholder="Name" aria-label="Name"><button class="ghost" id="del">Delete</button></div>
+ <div id="photo"></div>
+ <div class="grid">${TYPES[it.type].fields.map(f=>fieldHtml(it,f)).join('')}</div>
+ <div id="loc"></div><div id="fam"></div><div id="rel"></div><div id="conn"></div>
+ <h3>Session notes</h3>
+ <div class="addnote"><textarea id="nt" placeholder="What happened, what the party learned, what to remember" aria-label="New note"></textarea><button id="addn">Add note</button></div>
+ <div id="log"></div></div>`;
+ photo(it);applyShow(it);locUi(it);conn(it);fam(it);relUi(it);log(it);
+}
+function conn(it){
+ const out=new Map();
+ for(const [k,,t] of TYPES[it.type].fields.filter(f=>f[2]==='ref')){const o=byId(it.f[k]);if(o)out.set(o.id,o)}
+ S.items.forEach(o=>{if(o.id!==it.id&&(Object.values(o.f).includes(it.id)||(o.rel||[]).includes(it.id)))out.set(o.id,o)});
+ $('#conn').innerHTML=out.size?`<h3>Connected to</h3><div class="chips">${[...out.values()].map(o=>`<button class="chip row-link" data-go="${o.id}" style="cursor:pointer;color:inherit"><i>${TYPES[o.type].one}:</i> ${esc(o.name||'Unnamed')}</button>`).join('')}</div>`:'';
+}
+const INV={Mother:'Child',Father:'Child',Parent:'Child',Son:'Parent',Daughter:'Parent',Child:'Parent',Spouse:'Spouse',Partner:'Partner',Sibling:'Sibling',Brother:'Sibling',Sister:'Sibling',Cousin:'Cousin',Grandparent:'Grandchild',Grandchild:'Grandparent',Aunt:'Niece or nephew',Uncle:'Niece or nephew',Niece:'Aunt or uncle',Nephew:'Aunt or uncle',Guardian:'Ward',Ward:'Guardian','Other relative':'Relative'};
+const RELS=['Mother','Father','Parent','Son','Daughter','Child','Spouse','Partner','Sibling','Brother','Sister','Cousin','Grandparent','Grandmother','Grandfather','Grandchild','Grandson','Granddaughter','Aunt','Uncle','Niece','Nephew','Guardian','Ward','Other relative'];
+function inv(rel,g){
+ const p=(f,m,n)=>g==='Female'?f:g==='Male'?m:n;
+ if(['Mother','Father','Parent'].includes(rel))return p('Daughter','Son','Child');
+ if(['Son','Daughter','Child'].includes(rel))return p('Mother','Father','Parent');
+ if(['Sibling','Brother','Sister'].includes(rel))return p('Sister','Brother','Sibling');
+ if(['Grandparent','Grandmother','Grandfather'].includes(rel))return p('Granddaughter','Grandson','Grandchild');
+ if(['Grandchild','Grandson','Granddaughter'].includes(rel))return p('Grandmother','Grandfather','Grandparent');
+ if(['Aunt','Uncle'].includes(rel))return p('Niece','Nephew','Niece or nephew');
+ if(['Niece','Nephew'].includes(rel))return p('Aunt','Uncle','Aunt or uncle');
+ return {Spouse:'Spouse',Partner:'Partner',Cousin:'Cousin',Guardian:'Ward',Ward:'Guardian'}[rel]||'Other relative';
+}
+function famList(it){
+ const out=[];
+ (it.fam||[]).forEach((r,i)=>{const o=byId(r.id);if(o)out.push({o,rel:r.rel,own:it,i})});
+ S.items.forEach(o=>{if(o.id!==it.id)(o.fam||[]).forEach((r,i)=>{if(r.id===it.id)out.push({o,rel:inv(r.rel,o.f.gender),own:o,i})})});
+ return out;
+}
+const SIB=['Sibling','Brother','Sister'],PAR=['Mother','Father','Parent'];
+function syncSiblings(){
+ const seen=new Set();
+ S.items.filter(i=>i.type==='npc').forEach(n=>{
+  if(seen.has(n.id))return;
+  const grp=[n],stack=[n];seen.add(n.id);
+  while(stack.length){const c=stack.pop();famList(c).forEach(x=>{if(SIB.includes(x.rel)&&!seen.has(x.o.id)){seen.add(x.o.id);grp.push(x.o);stack.push(x.o)}})}
+  if(grp.length<2)return;
+  const ids=new Set(grp.map(g=>g.id));
+  const found={Mother:new Set(),Father:new Set(),Parent:new Set()};
+  grp.forEach(g=>famList(g).forEach(x=>{if(PAR.includes(x.rel)&&!ids.has(x.o.id))found[x.rel].add(x.o.id)}));
+  grp.forEach(g=>{
+   const linked=new Set(famList(g).map(x=>x.o.id));
+   ['Mother','Father'].forEach(r=>{
+    if(found[r].size!==1||famList(g).some(x=>x.rel===r))return;
+    const pid=[...found[r]][0];
+    if(!linked.has(pid)){(g.fam=g.fam||[]).push({id:pid,rel:r});linked.add(pid)}});
+   found.Parent.forEach(pid=>{if(!linked.has(pid)){(g.fam=g.fam||[]).push({id:pid,rel:'Parent'});linked.add(pid)}});
+  });
+ });
+}
+function fam(it){
+ const box=$('#fam');
+ if(it.type!=='npc'){box.innerHTML='';return}
+ const list=famList(it),used=new Set(list.map(x=>x.o.id));
+ const cand=S.items.filter(o=>o.type==='npc'&&o.id!==it.id&&!used.has(o.id)).sort((a,b)=>a.name.localeCompare(b.name)).map(o=>[o.id,o.name||'Unnamed']);
+ box.innerHTML='<h3>Family</h3>'+
+  (list.length?list.map((x,n)=>`<div class="famrow"><select class="relsel" data-fr="${n}" aria-label="Relationship to ${esc(x.o.name||'Unnamed')}">${opts(RELS,x.rel)}</select><button class="chip" data-go="${x.o.id}">${esc(x.o.name||'Unnamed')}</button><button class="ghost" data-fd="${n}">Remove</button></div>`).join(''):'<p class="fnone">No family linked yet.</p>')+
+  (cand.length?`<div class="addfam"><select id="famnpc" aria-label="Family member">${opts(cand,'','Choose an NPC')}</select><span>is this character’s</span><select id="famrel" aria-label="Relationship">${opts(RELS,'Mother')}</select><button id="addf">Add</button></div>`:'<p class="fnone">Create more NPCs to link them as family.</p>');
+}
+function log(it){
+ $('#log').innerHTML=it.log.slice().reverse().map(n=>`<div class="note"><small><span>${new Date(n.t).toLocaleString([], {dateStyle:'medium',timeStyle:'short'})}</span><button data-dn="${n.t}">Remove</button></small>${linkify(n.x,it.id)}</div>`).join('');
+}
+function relUi(it){
+ const box=$('#rel');
+ if(it.type!=='lore'){box.innerHTML='';return}
+ const cur=(it.rel||[]).filter(id=>byId(id));
+ const groups=Object.entries(TYPES).map(([k,t])=>{
+  const os=S.items.filter(o=>o.type===k&&o.id!==it.id&&!cur.includes(o.id)).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  return os.length?`<optgroup label="${esc(t.label)}">${os.map(o=>`<option value="${o.id}">${esc(o.name||'Unnamed')}</option>`).join('')}</optgroup>`:''}).join('');
+ box.innerHTML='<h3>Related entries</h3>'+
+  (cur.length?cur.map(id=>{const o=byId(id);return `<div class="famrow"><span class="rel">${TYPES[o.type].one}</span><button class="chip" data-go="${o.id}">${esc(o.name||'Unnamed')}</button><button class="ghost" data-rr="${o.id}">Remove</button></div>`}).join(''):'<p class="fnone">Nothing related yet.</p>')+
+  (groups?`<div class="addfam"><select id="relpick" aria-label="Related entry"><option value="">Choose an entry</option>${groups}</select><button id="addrel">Add</button></div>`:'<p class="fnone">Create more entries to relate them here.</p>');
+}
+function resizePhoto(file){
+ return new Promise((ok,bad)=>{
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{
+   const m=640,s=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement('canvas');
+   c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+   const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);
+   URL.revokeObjectURL(url);ok(c.toDataURL('image/jpeg',0.82))};
+  img.onerror=()=>{URL.revokeObjectURL(url);bad()};
+  img.src=url})
+}
+function photo(it){
+ const b=$('#photo');
+ b.innerHTML=(it.photo?`<div class="pic"><img src="${it.photo}" alt="Photo of ${esc(it.name||'this entry')}"><div><button class="ghost" id="ph-add">Replace photo</button> <button class="ghost" id="ph-del">Remove photo</button></div></div>`:'<button class="ghost" id="ph-add">Add photo</button>')+'<input type="file" id="ph-file" accept="image/*" hidden>';
+ $('#ph-add').onclick=()=>$('#ph-file').click();
+ $('#ph-file').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{it.photo=await resizePhoto(f);save();photo(it);renderList()}catch(x){b.insertAdjacentHTML('beforeend','<p class="fnone">That file could not be read as an image.</p>')}};
+ const d=$('#ph-del');if(d)d.onclick=()=>{delete it.photo;save();photo(it);renderList()};
+}
+function applyShow(it){TYPES[it.type].fields.forEach(f=>{if(!f[4])return;const el=document.querySelector('[data-fld="'+f[0]+'"]');if(el)el.hidden=!f[4](it.f)})}
+function pick(id){const it=byId(id);sel=id;confirmDel=false;if(it&&tab!=='all')tab=it.type;if(it&&collapsed.delete(tab+'|'+grpOf(it)))saveCollapsed();renderTabs();renderList();detail()}
+
+$('#tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;q='';$('#q').value='';qtype='';$('#qtype').value='';sel=null;renderTabs();renderList();detail()};
+$('#q').oninput=e=>{q=e.target.value;renderTabs();renderList()};
+$('#qtype').innerHTML='<option value="">All</option>'+Object.entries(TYPES).map(([k,t])=>`<option value="${k}">${t.label}</option>`).join('');
+$('#qtype').onchange=e=>{qtype=e.target.value;renderTabs();renderList()};
+$('#allbar').onclick=e=>{if(e.target.closest('[data-tab]'))$('#tabs').onclick(e)};
+$('#list').onclick=e=>{const g=e.target.closest('[data-grp]');if(g){const k=g.dataset.grp;collapsed.has(k)?collapsed.delete(k):collapsed.add(k);saveCollapsed();renderList();return}const b=e.target.closest('[data-id]');if(b)pick(b.dataset.id)};
+$('#add').onclick=()=>{
+ const it={id:'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),type:tab,name:'',f:{},log:[]};
+ S.items.push(it);q='';$('#q').value='';qtype='';$('#qtype').value='';save();pick(it.id);$('#nm').focus()};
+$('#cname').value=S.name||'';
+$('#cname').oninput=e=>{S.name=e.target.value;save()};
+const D=$('#detail');
+D.addEventListener('input',e=>{
+ const it=byId(sel);if(!it)return;
+ if(e.target.id==='nm'){it.name=e.target.value;renderList()}
+ else if(e.target.dataset.k){if(e.target.value==='__new'){$('#addrace').hidden=false;$('#newrace').focus();return}it.f[e.target.dataset.k]=e.target.value;renderList();conn(it);applyShow(it);if(it.type==='country'){locUi(it);if(e.target.dataset.k==='kind')refreshParent(it)}}
+ else return;
+ save()});
+D.addEventListener('click',e=>{
+ const it=byId(sel),t=e.target;if(!it)return;
+ if(t.id==='back'){sel=null;renderList();detail()}
+ else if(t.id==='addn'){const ta=$('#nt'),x=ta.value.trim();if(!x)return;it.log.push({t:Date.now(),x});ta.value='';log(it);save()}
+ else if(t.dataset.dn){it.log=it.log.filter(n=>String(n.t)!==t.dataset.dn);log(it);save()}
+ else if(t.closest('[data-go]'))pick(t.closest('[data-go]').dataset.go)
+ else if(t.closest('.rich')){editRich(t.closest('.rich'))}
+ else if(t.id==='saverace'){const n=$('#newrace').value.trim();if(!n)return;const name=raceList('').find(r=>r.toLowerCase()===n.toLowerCase())||n;S.races=S.races||[];if(!raceList('').includes(name))S.races.push(name);it.f.race=name;const fld=$('#f_race').closest('.fld');fld.innerHTML='<label for="f_race">Race / species</label>'+raceHtml('f_race',name);renderList();save()}
+ else if(t.id==='cancelrace'){$('#addrace').hidden=true;$('#f_race').value=it.f.race||''}
+ else if(t.id==='addrel'){const id=$('#relpick').value;if(!id)return;(it.rel=it.rel||[]).push(id);relUi(it);conn(it);save()}
+ else if(t.dataset.rr){it.rel=(it.rel||[]).filter(x=>x!==t.dataset.rr);relUi(it);conn(it);save()}
+ else if(t.id==='addf'){const id=$('#famnpc').value;if(!id)return;(it.fam=it.fam||[]).push({id,rel:$('#famrel').value});syncSiblings();fam(it);save()}
+ else if(t.dataset.fd){const x=famList(it)[+t.dataset.fd];if(x){x.own.fam.splice(x.i,1);fam(it);save()}}
+ else if(t.id==='del'){
+  if(!confirmDel){confirmDel=true;t.textContent='Click again to delete';t.classList.add('warn');return}
+  S.items=S.items.filter(o=>o.id!==it.id);
+  S.items.forEach(o=>{for(const k in o.f)if(o.f[k]===it.id)o.f[k]='';if(o.fam)o.fam=o.fam.filter(r=>r.id!==it.id);if(o.rel)o.rel=o.rel.filter(x=>x!==it.id)});
+  sel=null;confirmDel=false;save();renderTabs();renderList();detail()}
+});
+D.addEventListener('change',e=>{const it=byId(sel);if(!it||!e.target.dataset.fr)return;const x=famList(it)[+e.target.dataset.fr];if(!x)return;x.own.fam.splice(x.i,1);(it.fam=it.fam||[]).push({id:x.o.id,rel:e.target.value});syncSiblings();fam(it);save()});
+D.addEventListener('focusout',e=>{const t=e.target,it=byId(sel);if(!it||t.tagName!=='TEXTAREA'||!t.dataset.k)return;const r=document.getElementById(t.id+'_r');if(r&&t.value.trim()){r.innerHTML=linkify(t.value,it.id);r.hidden=false;t.hidden=true}});
+D.addEventListener('keydown',e=>{const r=e.target.closest&&e.target.closest('.rich');if(r&&e.target===r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();editRich(r)}});
+D.addEventListener('keydown',e=>{if(e.target.id==='newrace'&&e.key==='Enter'){e.preventDefault();$('#saverace').click()}});
+function dlFile(name,blob){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+const acEl=document.createElement('div');acEl.className='ac';acEl.hidden=true;acEl.setAttribute('role','listbox');document.body.appendChild(acEl);
+let ac=null;
+function acHide(){ac=null;acEl.hidden=true}
+function isW(c){return !!c&&/[\p{L}\p{N}]/u.test(c)}
+function acSub(o){
+ const f=o.f||{};
+ const s={npc:[f.ctype||'NPC',f.race],country:[f.kind||'Country',nmOf(f.parent)],lore:[f.cat||'History'],item:[f.kind||'Common',f.cat||'Weapon']}[o.type]||[];
+ return TYPES[o.type].one+': '+s.filter(Boolean).join(', ');
+}
+function acRender(){
+ acEl.innerHTML=ac.c.map((x,i)=>`<div class="acitem" role="option" data-ai="${i}" aria-selected="${i===ac.i}"><span>${esc(x.n)}</span><small>${esc(acSub(x.o))}${i===ac.i?' (Tab)':''}</small></div>`).join('');
+ const r=ac.ta.getBoundingClientRect();
+ acEl.hidden=false;
+ acEl.style.left=r.left+'px';acEl.style.minWidth=Math.min(r.width,360)+'px';
+ acEl.style.top=(r.bottom+acEl.offsetHeight+6>innerHeight?r.top-acEl.offsetHeight-2:r.bottom+2)+'px';
+}
+function acUpdate(ta){
+ if(!ta||ta.tagName!=='TEXTAREA'||!(ta.dataset.k||ta.id==='nt')){acHide();return}
+ const pos=ta.selectionStart;
+ if(ta.selectionEnd!==pos||isW(ta.value[pos])){acHide();return}
+ const before=ta.value.slice(0,pos),low=before.toLowerCase(),seen=new Set(),c=[];
+ S.items.forEach(o=>{
+  const n=(o.name||'').trim(),nl=n.toLowerCase();
+  if(n.length<3||o.id===sel||seen.has(nl))return;
+  seen.add(nl);
+  for(let L=Math.min(n.length-1,low.length);L>=2;L--){
+   if(low.endsWith(nl.slice(0,L))&&!isW(before[before.length-L-1])){c.push({o,n,L});break}
+  }
+ });
+ if(!c.length){acHide();return}
+ c.sort((a,b)=>b.L-a.L||a.n.localeCompare(b.n));
+ ac={ta,c:c.slice(0,5),i:0};
+ acRender();
+}
+function acAccept(i){
+ const {ta,c}=ac,x=c[i],pos=ta.selectionStart,start=pos-x.L;
+ ta.value=ta.value.slice(0,start)+x.n+ta.value.slice(pos);
+ const np=start+x.n.length;ta.setSelectionRange(np,np);
+ acHide();
+ ta.dispatchEvent(new Event('input',{bubbles:true}));
+}
+D.addEventListener('input',e=>acUpdate(e.target));
+D.addEventListener('keydown',e=>{
+ if(!ac||e.target!==ac.ta)return;
+ if(e.key==='Tab'&&!e.shiftKey){e.preventDefault();acAccept(ac.i)}
+ else if(e.key==='ArrowDown'){e.preventDefault();ac.i=(ac.i+1)%ac.c.length;acRender()}
+ else if(e.key==='ArrowUp'){e.preventDefault();ac.i=(ac.i+ac.c.length-1)%ac.c.length;acRender()}
+ else if(e.key==='Escape'){e.preventDefault();acHide()}
+});
+D.addEventListener('click',()=>{if(ac)acHide()});
+D.addEventListener('focusout',()=>acHide());
+D.addEventListener('scroll',()=>acHide());
+acEl.addEventListener('mousedown',e=>{e.preventDefault();const t=e.target.closest('[data-ai]');if(t&&ac)acAccept(+t.dataset.ai)});
+$('#xl').onclick=async()=>{
+ const b=$('#xl'),flash=m=>{b.textContent=m;setTimeout(()=>b.textContent='Export to Excel',2500)};
+ if(!window.XLSX){flash('Excel library did not load');return}
+ const nameOf=id=>{const o=byId(id);return o?(o.name||'Unnamed'):''};
+ const cap=s=>String(s).slice(0,32000);
+ const wb=XLSX.utils.book_new();
+ const add=(sheet,cols,rows)=>{
+  const ws=XLSX.utils.json_to_sheet(rows,{header:cols});
+  ws['!cols']=cols.map(c=>({wch:Math.min(60,Math.max(c.length,...rows.map(r=>String(r[c]||'').split('\n')[0].length))+2)}));
+  XLSX.utils.book_append_sheet(wb,ws,sheet)};
+ const byName=(a,b)=>(a.name||'').localeCompare(b.name||'');
+ const notesOf=i=>cap(i.log.map(n=>'['+new Date(n.t).toLocaleDateString()+'] '+n.x).join('\n'));
+ [['npc','Characters'],['country','Geography'],['lore','Lore'],['item','Items']].forEach(([type,sheet])=>{
+  const T=TYPES[type],cols=['Name',...T.fields.map(f=>f[1])];
+  if(type==='npc')cols.push('Family');
+  if(type==='lore')cols.push('Related entries');
+  cols.push('Notes');
+  const rows=S.items.filter(i=>i.type===type).sort(byName).map(i=>{
+   const r={Name:i.name||'Unnamed'};
+   T.fields.forEach(([k,l,t,x])=>{r[l]=t==='calc'?(totalPop(i)||''):t==='ref'?nameOf(i.f[k]):(i.f[k]||(t==='select'?x[0]:''))});
+   if(type==='npc')r.Family=famList(i).map(x=>x.rel+': '+(x.o.name||'Unnamed')).join('; ');
+   if(type==='lore')r['Related entries']=(i.rel||[]).map(id=>byId(id)).filter(Boolean).map(o=>TYPES[o.type].one+': '+(o.name||'Unnamed')).join('; ');r.Notes=notesOf(i);return r});
+  add(sheet,cols,rows)});
+ const fr=[];
+ S.items.filter(i=>i.type==='npc').sort(byName).forEach(i=>(i.fam||[]).forEach(r=>{const o=byId(r.id);if(o)fr.push({NPC:i.name||'Unnamed','Family member':o.name||'Unnamed','Their relationship to the NPC':r.rel})}));
+ add('Family',['NPC','Family member','Their relationship to the NPC'],fr);
+ const nr=[];
+ S.items.slice().sort(byName).forEach(i=>i.log.forEach(n=>nr.push({Type:TYPES[i.type].one,Name:i.name||'Unnamed',Date:new Date(n.t).toLocaleString(),Note:cap(n.x)})));
+ add('Session Notes',['Type','Name','Date','Note'],nr);
+ const buf=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+ const fname=((S.name||'').replace(/[\\/:*?"<>|]+/g,'').trim()||'Campaign')+'.xlsx';
+ try{const dl=window.claude&&await claude.use('downloads');if(dl){await dl.save({filename:fname,data:buf});return}}catch(e){if(e&&e.code==='declined')return}
+ dlFile(fname,new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+};
+let clrT;$('#clr').onclick=()=>{
+ const b=$('#clr');
+ if(b.dataset.arm!=='1'){b.dataset.arm='1';b.textContent='Click again to erase everything';clearTimeout(clrT);clrT=setTimeout(()=>{b.dataset.arm='';b.textContent='Clear all data'},4000);return}
+ clearTimeout(clrT);b.dataset.arm='';b.textContent='Clear all data';
+ S.items=[];S.races=[];sel=null;q='';$('#q').value='';save();renderTabs();renderList();detail()};
+$('#exp').onclick=async()=>{
+ const data=JSON.stringify(S,null,2);
+ try{const dl=window.claude&&await claude.use('downloads');if(dl){await dl.save({filename:'campaign-codex.json',data});return}}catch(e){if(e&&e.code==='declined')return}
+ dlFile('campaign-codex.json',new Blob([data],{type:'application/json'}));
+};
+$('#imp').onchange=e=>{
+ const f=e.target.files[0];if(!f)return;
+ f.text().then(t=>{const j=JSON.parse(t);if(!Array.isArray(j.items))throw 0;
+  S={name:j.name||'',races:Array.isArray(j.races)?j.races:[],items:j.items.map(i=>({id:i.id,type:i.type,name:i.name||'',f:i.f||{},fam:i.fam||[],photo:i.photo||'',rel:i.rel||[],log:i.log||[]})).map(migrate).filter(i=>i.id&&TYPES[i.type])};
+  $('#cname').value=S.name;sel=null;save();renderTabs();renderList();detail()}).catch(()=>alert('That file is not a Campaign Codex export.'));
+ e.target.value=''};
+renderTabs();renderList();detail();
+</script>
+</body>
+</html>
